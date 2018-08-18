@@ -66,10 +66,50 @@ return day === 6 ||
 
 function ircustom(agent) {
   // var d = new Date().getDay();
-   var d = agent.parameters.wday;
+  var mclass = agent.parameters.mclass; //main class selected
+  var msec = agent.parameters.msection; //main section selected
+  var opt = agent.parameters.option; // options - routine or assignments
+  if(opt === "routine" && mclass === "BCT" && msec === "A")
+  {
+    bctaroutine ();
+  }
+  
+  else {
+    agent.add('Sorry, this function is only available for BCT A at the moment.');
+  }
+  
+}
+
+function iassign(agent)
+{
+  var mclass = agent.parameters.mclass;
+  var msec = agent.parameters.msection;
+  var assign = agent.parameters.assign;
+  if( assign === "assignments")
+  {
+    agent.add('you chose assignments');
+  }
+}
+
+function bctaroutine()
+{
+  var d = agent.parameters.wday; // week day selected
   switch(d) {
-      case "Monday":
-          agent.add(`Here's your routine for ${d} :`);
+    case "Monday":
+    agent.add(`Here's your routine for ${d} :`);
+    agent.add(new Card({
+      title: `BCT A Routine - ${d}`,
+      imageUrl: 'http://testcreative.co.uk/wp-content/uploads/2017/10/Test-Logo-Small-Black-transparent-1.png',
+    text: ``,
+    buttonText: 'Open In Browser',
+    buttonUrl: 'https://images.google.com/'
+  })
+);
+
+  break;
+  
+  case "Tuesday":
+       agent.add(`Here's your routine for ${d} :`);
   agent.add(new Card({
       title: `BCT A Routine - ${d}`,
       imageUrl: 'http://testcreative.co.uk/wp-content/uploads/2017/10/Test-Logo-Small-Black-transparent-1.png',
@@ -78,64 +118,48 @@ function ircustom(agent) {
       buttonUrl: 'https://images.google.com/'
     })
   );
-
-    break;
-    
-    case "Tuesday":
-         agent.add(`Here's your routine for ${d} :`);
-    agent.add(new Card({
-        title: `BCT A Routine - ${d}`,
-        imageUrl: 'http://testcreative.co.uk/wp-content/uploads/2017/10/Test-Logo-Small-Black-transparent-1.png',
-        text: ``,
-        buttonText: 'Open In Browser',
-        buttonUrl: 'https://images.google.com/'
-      })
-    );
-   
-    break;
-            
-    case "Wednesday":
-        agent.add(`Here's your routine for ${d} :`);
-        agent.add(new Card({
-        title: `BCT A Routine - ${d}`,
-        imageUrl: 'http://testcreative.co.uk/wp-content/uploads/2017/10/Test-Logo-Small-Black-transparent-1.png',
-        text: ``,
-        buttonText: 'Open In Browser',
-        buttonUrl: 'https://images.google.com/'
-      })
-    );
-   
-    break;
-    
-     case "Thursday":
-         agent.add(`Here's your routine for ${d} :`);
-    agent.add(new Card({
-        title: `BCT A Routine - ${d}`,
-        imageUrl: 'http://testcreative.co.uk/wp-content/uploads/2017/10/Test-Logo-Small-Black-transparent-1.png',
-        text: ``,
-        buttonText: 'Open In Browser',
-        buttonUrl: 'https://images.google.com/'
-      })
-    );
-    break;
-    
-    case "Friday":
-        agent.add(`Here's your routine for ${d} :`);
-   agent.add(new Card({
-       title: `BCT A Routine - ${d}`,
-       imageUrl: 'http://testcreative.co.uk/wp-content/uploads/2017/10/Test-Logo-Small-Black-transparent-1.png',
-       text: ``,
-       buttonText: 'Open In Browser',
-       buttonUrl: 'https://images.google.com/'
-     })
-   );
-
-   break;
-   }
+ 
+  break;
+          
+  case "Wednesday":
+      agent.add(`Here's your routine for ${d} :`);
+      agent.add(new Card({
+      title: `BCT A Routine - ${d}`,
+      imageUrl: 'http://testcreative.co.uk/wp-content/uploads/2017/10/Test-Logo-Small-Black-transparent-1.png',
+      text: ``,
+      buttonText: 'Open In Browser',
+      buttonUrl: 'https://images.google.com/'
+    })
+  );
+ 
+  break;
   
-     
-}
+  case "Thursday":
+  agent.add(`Here's your routine for ${d} :`);
+  agent.add(new Card({
+    title: `BCT A Routine - ${d}`,
+    imageUrl: 'http://testcreative.co.uk/wp-content/uploads/2017/10/Test-Logo-Small-Black-transparent-1.png',
+    text: ``,
+    buttonText: 'Open In Browser',
+    buttonUrl: 'https://images.google.com/'
+    })
+  );
+  break;
+  
+  case "Friday":
+  agent.add(`Here's your routine for ${d} :`);
+  agent.add(new Card({
+    title: `BCT A Routine - ${d}`,
+    imageUrl: 'http://testcreative.co.uk/wp-content/uploads/2017/10/Test-Logo-Small-Black-transparent-1.png',
+    text: ``,
+     buttonText: 'Open In Browser',
+     buttonUrl: 'https://images.google.com/'
+   })
+ );
 
+ break;
+ }
+}
   // // Uncomment and edit to make your own Google Assistant intent handler
   // // uncomment `intentMap.set('your intent name here', googleAssistantHandler);`
   // // below to get this function to be run when a Dialogflow intent is matched
@@ -157,7 +181,10 @@ function ircustom(agent) {
   intentMap.set('test', testint);
   intentMap.set('class-open', classopen);
   intentMap.set('info-routine - custom', ircustom);
-  // intentMap.set('intent name' function name)
+  intentMap.set('info-assignments', iassign);
+ // intentMap.set('Info-class', ClassSec);
+  // intentMap.set('intent name', function name)  
+
   // intentMap.set('your intent name here', googleAssistantHandler);
   agent.handleRequest(intentMap);
 }); 
