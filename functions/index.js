@@ -5,6 +5,13 @@
 const functions = require('firebase-functions');
 const {WebhookClient} = require('dialogflow-fulfillment');
 const {Card, Suggestion} = require('dialogflow-fulfillment');
+
+// initialise DB connection
+const admin = require('firebase-admin');
+admin.initializeApp({
+  credential: admin.credential.applicationDefault(),
+  databaseURL: 'ws://atitkharel-201017.firebaseio.com/', //from firebase database
+});
  
 process.env.DEBUG = 'dialogflow:debug'; // enables lib debugging statements
  
@@ -14,7 +21,7 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
   console.log('Dialogflow Request body: ' + JSON.stringify(request.body));
  
   function welcome(agent) {
-    agent.add(`Welcome to my agent!`);
+    agent.add(`Welcome to BCT Info!`);
   }
  
   function fallback(agent) {
@@ -22,11 +29,9 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
     agent.add(`I'm sorry, can you try again?`);
 }
     
-// Uncomment and edit to make your own intent handler
-// uncomment `intentMap.set('your intent name here', yourFunctionHandler);`
-// below to get this function to be run when a Dialogflow intent is matched
 
-  function testint(agent) {
+
+  function testint(agent) {   //just a test function created to test parameter value comparison
      
      var d = agent.parameters.id;
      if (d === 2){
@@ -46,7 +51,7 @@ agent.add(new Suggestion(`Go Back`));
 }
 
 
-function classopen (agent) {
+function classopen (agent) {  //funtion to notify about tomorrow's class
 if (currentlyOpen()) {
   agent.add(`There won't be classes tomorrow `);
 } else {
@@ -54,7 +59,7 @@ if (currentlyOpen()) {
 }
 }
 
-function currentlyOpen () {
+function currentlyOpen () {   // reutrn day as friday or saturday (5 or 6)
 var currentDateTime = new Date(); // current time
 var hours = currentDateTime.getHours();
 var mins = currentDateTime.getMinutes();
@@ -71,27 +76,37 @@ function ircustom(agent) {
   var opt = agent.parameters.option; // options - routine or assignments
   if(opt === "routine" && mclass === "BCT" && msec === "A")
   {
-    bctaroutine ();
+    bctaroutine ();  //function to print BCT A Routine
   }
   
   else {
-    agent.add('Sorry, this function is only available for BCT A at the moment.');
+    agent.add('Sorry, this function is only available for BCT A at the moment.'); 
   }
   
 }
 
-function iassign(agent)
+function iassign(agent) // Function for assignment
 {
-  var mclass = agent.parameters.mclass;
-  var msec = agent.parameters.msection;
-  var assign = agent.parameters.assign;
-  if( assign === "assignments")
+  var mclass = agent.parameters.mclass; //main class
+  var msec = agent.parameters.msection; //main section
+  var assign = agent.parameters.assign; //assignment
+  if( assign === "assignments" && mclass === "BCT" && msec === "A")
   {
-    agent.add('you chose assignments');
+    return admin.database().ref('assignmentInfo').transaction((assignmentInfo) => {
+      if(assignmentInfo !== null) {
+        let currentAssignment = assignmentInfo.assignBCTA;
+        agent.add(currentAssignment);
+      }
+      return assignmentInfo;
+    });
+   // agent.add('you chose assignments');
+  }
+  else {
+    agent.add('Sorry, this function is only available for BCT A at the moment.'); 
   }
 }
 
-function bctaroutine()
+function bctaroutine() // Routine of BCT A
 {
   var d = agent.parameters.wday; // week day selected
   switch(d) {
@@ -160,19 +175,6 @@ function bctaroutine()
  break;
  }
 }
-  // // Uncomment and edit to make your own Google Assistant intent handler
-  // // uncomment `intentMap.set('your intent name here', googleAssistantHandler);`
-  // // below to get this function to be run when a Dialogflow intent is matched
-  // function googleAssistantHandler(agent) {
-  //   let conv = agent.conv(); // Get Actions on Google library conv instance
-  //   conv.ask('Hello from the Actions on Google client library!') // Use Actions on Google library
-  //   agent.add(conv); // Add Actions on Google library responses to your agent's response
-  // }
-  // // See https://github.com/dialogflow/dialogflow-fulfillment-nodejs/tree/master/samples/actions-on-google
-  // // for a complete Dialogflow fulfillment library Actions on Google client library v2 integration sample
-
-//test sheet
-//
 
   // Run the proper function handler based on the matched Dialogflow intent name
   let intentMap = new Map();
@@ -194,26 +196,3 @@ function bctaroutine()
 
 
 
-
-
-
-
-
-
-
-
-
-// // Create and Deploy Your First Cloud Functions
-// // https://firebase.google.com/docs/functions/write-firebase-functions
-//
-// exports.helloWorld = functions.https.onRequest((request, response) => {
-//  response.send("Hello from Firebase!");
-// });
-
-
-// // Create and Deploy Your First Cloud Functions
-// // https://firebase.google.com/docs/functions/write-firebase-functions
-//
-// exports.helloWorld = functions.https.onRequest((request, response) => {
-//  response.send("Hello from Firebase!");
-// });
