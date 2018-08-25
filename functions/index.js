@@ -187,6 +187,9 @@ function AdminLogin(agent)
     agent.add('Welcome to BCT Info - Admin Panel (beta) \n \nYou can use different commands to update your section\'s information from here.');
     agent.add('What would you like yo update ?');
     agent.add(new Suggestion(`Assignments`));
+    agent.setContext('ActivateAssignmentOption');
+    const context = {'name': 'ActivateAssignmentOption', 'lifespan': 1};
+    agent.setContext(context);
   }
   else 
   {
