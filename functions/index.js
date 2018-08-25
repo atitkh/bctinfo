@@ -195,7 +195,16 @@ function AdminLogin(agent)
 }
 
 
- 
+ function AdminUpdateAssignment(agent)
+ {
+     var na = agent.parameters.newass;
+     var AMuser = agent.parameters.AMuser;
+     var AMpass = agent.parameters.AMpass;
+    if(AMuser === "bctacr" && AMpass === "bctapass")
+   {
+     agent.add('The info you entered is : ' + na);
+   }
+ }
 
   // Run the proper function handler based on the matched Dialogflow intent name
   let intentMap = new Map();
@@ -206,7 +215,7 @@ function AdminLogin(agent)
   intentMap.set('info-routine - custom', ircustom);
   intentMap.set('info-assignments', iassign);
   intentMap.set('AdminLogin - Yes', AdminLogin);
- 
+  intentMap.set('NewAssignment', AdminUpdateAssignment);
  // intentMap.set('Info-class', ClassSec);
   // intentMap.set('intent name', function name)  
 
