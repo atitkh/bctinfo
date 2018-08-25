@@ -176,6 +176,27 @@ function bctaroutine() // Routine of BCT A
  }
 }
 
+function AdminLogin(agent)
+{
+  var exit = agent.parameters.exit;
+  var username = agent.parameters.username;
+  var password = agent.parameters.password;
+  if (username === "bctacr" && password ==="bctapass")
+  {
+    agent.add('Login Successful!');
+    agent.add('Welcome to BCT Info - Admin Panel (beta) \n \nYou can use different commands to update your section\'s information from here.');
+    agent.add('What would you like yo update ?');
+    agent.add(new Suggestion(`Assignments`));
+  }
+  else 
+  {
+    agent.add('Incorrect Username or Password. Please try again.');
+  }
+}
+
+
+ 
+
   // Run the proper function handler based on the matched Dialogflow intent name
   let intentMap = new Map();
   intentMap.set('Default Welcome Intent', welcome);
@@ -184,6 +205,8 @@ function bctaroutine() // Routine of BCT A
   intentMap.set('class-open', classopen);
   intentMap.set('info-routine - custom', ircustom);
   intentMap.set('info-assignments', iassign);
+  intentMap.set('AdminLogin - Yes', AdminLogin);
+ 
  // intentMap.set('Info-class', ClassSec);
   // intentMap.set('intent name', function name)  
 
